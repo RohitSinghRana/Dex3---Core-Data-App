@@ -29,7 +29,7 @@ jobs:
         run: |
           COMMITS=$(git log --pretty=format:"%s")  # Get commit messages in the current branch
           echo "$COMMITS" | while read -r COMMIT; do
-              if [[ ! "$COMMIT" =~ ^(R[0-9]+\.[0-9]+\.[0-9]+::|feat|fix|chore|docs|test|refactor)\: ]]; then
+             if [[ ! "$COMMIT" =~ ^(R[0-9]+\.[0-9]+\.[0-9]+::|feat:|fix:|chore:|docs:|test:|refactor:).* ]]; then
               echo "❌ Commit message '$COMMIT' is invalid."
               echo "Must start with R<major>.<minor>.<patch>:: or valid conventional prefix (feat:, fix:, etc.)"
               exit 1
