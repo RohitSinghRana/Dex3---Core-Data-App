@@ -1,0 +1,45 @@
+name: iOS CI with PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build and Check PR
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate PR title (strict version format)
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          if [[ ! "$TITLE" =~ ^R[0-9]+\.[0-9]+\.[0-9]+::.+$ ]]; then
+          echo "❌ PR title must follow format: R<major>.<minor>.<patch>::<description>"
+          echo "Your PR title: '$TITLE'"
+          exit 1
+          fi
+
+      - name: Validate commit messages
+        run: |
+          COMMITS=$(git log origin/main..HEAD --pretty=format:"%s")
+          echo "$COMMITS" | while read -r COMMIT; do
+            if [[ ! "$COMMIT" =~ ^(feat|fix|chore|docs|test|refactor)\: ]]; then
+              echo "❌ Commit message '$COMMIT' is not valid. Must start with feat:, fix:, etc."
+              exit 1
+            fi
+          done
+
+      - name: Set Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
+      - name: Build the project
+        run: |
+          xcodebuild clean build \
+            -project YourApp.xcodeproj \
+            -scheme YourAppScheme \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            ONLY_ACTIVE_ARCH=YES
