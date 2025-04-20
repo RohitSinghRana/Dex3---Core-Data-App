@@ -22,14 +22,18 @@ jobs:
           exit 1
           fi
 
+      - name: Fetch all commits
+        run: git fetch --prune --unshallow
+
       - name: Validate commit messages
         run: |
-          COMMITS=$(git log origin/test-ci..HEAD --pretty=format:"%s")
+          COMMITS=$(git log --pretty=format:"%s")  # Get commit messages in the current branch
           echo "$COMMITS" | while read -r COMMIT; do
-            if [[ ! "$COMMIT" =~ ^(feat|fix|chore|docs|test|refactor)\: ]]; then
-              echo "❌ Commit message '$COMMIT' is not valid. Must start with feat:, fix:, etc."
+              if [[ ! "$COMMIT" =~ ^(R[0-9]+\.[0-9]+\.[0-9]+::|feat|fix|chore|docs|test|refactor)\: ]]; then
+              echo "❌ Commit message '$COMMIT' is invalid."
+              echo "Must start with R<major>.<minor>.<patch>:: or valid conventional prefix (feat:, fix:, etc.)"
               exit 1
-            fi
+              fi
           done
 
       - name: Set Xcode version
