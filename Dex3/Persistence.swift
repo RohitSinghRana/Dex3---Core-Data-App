@@ -10,9 +10,10 @@ import CoreData
 struct PersistenceController {
     // The shared instance of the persistence controller which controls our database
     static let shared = PersistenceController()
-    // the thing that hold the stuff (the database)
+    // The thing that hold the stuff (the database)
     let container: NSPersistentContainer
 
+    // The thing that controls our sample preview database
     @MainActor
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
