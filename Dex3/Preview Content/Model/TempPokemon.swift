@@ -87,7 +87,7 @@ struct TempPokemon: Codable {
             }
         }
         
-        var spriteContainer = try container.nestedContainer(keyedBy: PokemonKeys.SpritesKeys.self, forKey: .sprites)
+        let spriteContainer = try container.nestedContainer(keyedBy: PokemonKeys.SpritesKeys.self, forKey: .sprites)
         sprite = try spriteContainer.decode(URL.self, forKey: .sprite)
         shiny = try spriteContainer.decode(URL.self, forKey: .shiny)
     }
