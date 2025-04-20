@@ -24,7 +24,7 @@ jobs:
 
       - name: Validate commit messages
         run: |
-          COMMITS=$(git log origin/main..HEAD --pretty=format:"%s")
+          COMMITS=$(git log origin/test-ci..HEAD --pretty=format:"%s")
           echo "$COMMITS" | while read -r COMMIT; do
             if [[ ! "$COMMIT" =~ ^(feat|fix|chore|docs|test|refactor)\: ]]; then
               echo "❌ Commit message '$COMMIT' is not valid. Must start with feat:, fix:, etc."
@@ -33,7 +33,7 @@ jobs:
           done
 
       - name: Set Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+        run: sudo xcode-select -s /Applications/Xcode_16.3.app
 
       - name: Build the project
         run: |
